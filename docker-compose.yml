@@ -1,0 +1,49 @@
+version: '2'
+services:
+# Database
+
+  mysql:
+    image: mysql:5.7
+    container_name: db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: root
+      MYSQL_DATABASE: project
+    volumes:
+      - ./mysql:/var/lib/mysql 
+
+  redis:
+    image: "redis:alpine"
+    ports: 
+      - "6379"
+
+
+# Products
+  project:
+    image: "realanmup/laradocker:latest"
+    container_name: project
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./project:/srv/
+    privileged: true
+    links:
+      - mysql
+      - redis
+    working_dir: "/srv"
+    command: sh setup.sh
+
+
+# Load Balancer
+  nginx:
+    image: nginx
+    container_name: lB
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    links:
+      - project
+    

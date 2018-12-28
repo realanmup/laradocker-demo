@@ -1,7 +1,7 @@
 version: '2'
 services:
-# Database
 
+# Database
   mysql:
     image: mysql:5.7
     container_name: db
@@ -24,8 +24,9 @@ services:
   project:
     image: "realanmup/laradocker:latest"
     container_name: project
+    hostname: localhost
     ports:
-      - "8000:8000"
+      - "80:8000"
     volumes:
       - ./project:/srv/
     privileged: true
@@ -36,14 +37,14 @@ services:
     command: sh setup.sh
 
 
-# Load Balancer
-  nginx:
-    image: nginx
-    container_name: lB
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
-    links:
-      - project
-    
+# # Load Balancer
+#   nginx:
+#     image: nginx
+#     container_name: lB
+#     ports:
+#       - "80:80"
+#     volumes:
+#       - ./nginx:/etc/nginx/conf.d
+#     links:
+#       - project
+#     
